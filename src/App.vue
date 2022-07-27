@@ -1,27 +1,30 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+  <el-row :gutter="20">
+    <el-col :span="4">
+      <SideBar />
+    </el-col>
+    <el-col :span="20">
+      <FormTask></FormTask>
+    </el-col>
+  </el-row>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
-
+import SideBar from "./components/SideBar.vue";
+import FormTask from "./components/FormTask.vue";
 export default defineComponent({
   name: "App",
   components: {
-    HelloWorld,
+    SideBar,
+    FormTask,
   },
 });
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+body {
+  margin: 0;
+  padding: 0;
 }
 </style>
