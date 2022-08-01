@@ -7,11 +7,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
+export default {
   name: "SideBar",
-});
+  inheritAttrs: false,
+  customOptions: {},
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -24,7 +24,6 @@ header {
 }
 .img-logo {
   width: 80%;
-  text-align: center;
 }
 .title {
   text-align: center;
