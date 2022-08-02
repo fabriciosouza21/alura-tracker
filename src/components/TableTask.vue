@@ -1,39 +1,38 @@
 <template>
-  <el-table :data="tableData" style="width: 100%">
-    <el-table-column prop="date" label="Date" width="180" />
-    <el-table-column prop="name" label="Name" width="180" />
-    <el-table-column prop="address" label="Address" />
+  <el-table :data="tableData" :border="true">
+    <el-table-column width="100" prop="timerFormatted" label="Tempo" />
+    <el-table-column resizable prop="name" label="Name" />
+    <el-table-column width="100">
+      <template #default="scope">
+        <el-button text size="small" @click="handleEdit(scope.$index)">
+          <el-icon>
+            <Edit></Edit>
+          </el-icon>
+        </el-button>
+      </template>
+    </el-table-column>
   </el-table>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-export default defineComponent({
+export default {
   name: "TableTask",
-  setup() {
-    const tableData = ref([
-      {
-        date: "2016-05-03",
-        name: "Tom",
-        address: "No. 189, Grove St, Los Angeles",
-      },
-      {
-        date: "2016-05-02",
-        name: "Tom",
-        address: "No. 189, Grove St, Los Angeles",
-      },
-      {
-        date: "2016-05-04",
-        name: "Tom",
-        address: "No. 189, Grove St, Los Angeles",
-      },
-      {
-        date: "2016-05-01",
-        name: "Tom",
-        address: "No. 189, Grove St, Los Angeles",
-      },
-    ]);
-    return { tableData };
+  inheritAttrs: false,
+  customOptions: {},
+};
+</script>
+<script setup lang="ts">
+import { defineProps, defineEmits } from "vue";
+const props = defineProps({
+  tableData: {
+    type: Array,
+    default: () => [],
   },
 });
+
+const emit = defineEmits(["edit"]);
+
+const handleEdit = (index: number) => {
+  emit("edit", index);
+};
 </script>

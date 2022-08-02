@@ -18,9 +18,7 @@ export default {
 <style scoped>
 header {
   padding-top: 1em;
-  background: #0d3b66;
   width: 100%;
-  height: 100vh;
 }
 .img-logo {
   width: 80%;

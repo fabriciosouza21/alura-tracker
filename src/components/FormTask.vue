@@ -48,70 +48,82 @@
     </el-form>
   </div>
 </template>
+
 <script lang="ts">
-import { FormInstance, FormRules } from "element-plus";
-import { ref, computed, defineComponent, reactive } from "vue";
-export default defineComponent({
+export default {
   name: "FormTask",
-  setup() {
-    const task = reactive({
-      name: "",
-      time: 0,
-      isTimerActive: false,
-      // eslint-disable-next-line
-      cron: 0 as any,
-    });
+  inheritAttrs: false,
+  customOptions: {},
+};
+</script>
 
-    const ruleFormRef = ref<FormInstance>();
-    const rules = reactive<FormRules>({
-      name: [
-        {
-          required: true,
-          message: "Por favor, informe o nome da tarefa",
-          trigger: "blur",
-        },
-      ],
-    });
+<script setup lang="ts">
+import { FormInstance, FormRules } from "element-plus";
+import { ref, computed, reactive, defineEmits, defineProps } from "vue";
+import TaskStorageItem from "./task/TaskStorage";
+import TaskStorageService from "./task/TaskStorageService";
 
-    const play = () => {
-      task.isTimerActive = true;
-      task.cron = setInterval(() => {
-        task.time += 1;
-      }, 1000);
-    };
-
-    const stop = () => {
-      task.isTimerActive = false;
-      clearInterval(task.cron);
-      task.time = 0;
-    };
-    const timeFormatted = computed(() => {
-      return new Date(task.time * 1000).toISOString().substring(11, 19);
-    });
-
-    const submitForm = async (formEl: FormInstance | undefined) => {
-      if (!formEl) return;
-      await formEl.validate((valid, fields) => {
-        if (valid) {
-          play();
-          console.log("submit!");
-        } else {
-          console.log("error submit!", fields);
-        }
-      });
-    };
-
-    return {
-      task,
-      rules,
-      timeFormatted,
-      play,
-      stop,
-      submitForm,
-      ruleFormRef,
-    };
+const props = defineProps({
+  task: TaskStorageItem,
+  default: {
+    type: TaskStorageItem,
+    default: () => new TaskStorageItem("", "00:00:00", 0),
   },
 });
+const task = reactive({
+  name: "",
+  time: 0,
+  isTimerActive: false,
+  // eslint-disable-next-line
+  cron: 0 as any,
+  timerFormatted: "",
+});
+const ruleFormRef = ref<FormInstance>();
+const emit = defineEmits(["submitForm"]);
+const rules = reactive<FormRules>({
+  name: [
+    {
+      required: true,
+      message: "Por favor, informe o nome da tarefa",
+      trigger: "blur",
+    },
+  ],
+});
+
+const play = () => {
+  task.isTimerActive = true;
+  task.cron = setInterval(() => {
+    task.time += 1;
+  }, 1000);
+};
+
+const stop = () => {
+  task.isTimerActive = false;
+  clearInterval(task.cron);
+  task.timerFormatted = timeFormattedStorage();
+  const { name, timerFormatted, time } = task;
+  let taskStorageItem = new TaskStorageItem(name, timerFormatted, time);
+  const taskStorageService = new TaskStorageService();
+  taskStorageService.setTask(taskStorageItem);
+  emit("submitForm");
+  task.time = 0;
+  task.name = "";
+};
+const timeFormatted = computed(() => {
+  return new Date(task.time * 1000).toISOString().substring(11, 19);
+});
+const timeFormattedStorage = () => {
+  return new Date(task.time * 1000).toISOString().substring(11, 19);
+};
+
+const submitForm = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
+  await formEl.validate((valid) => {
+    if (valid) {
+      play();
+    }
+  });
+};
 </script>
 <style scoped>
 .form-task {

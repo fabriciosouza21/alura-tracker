@@ -1,11 +1,11 @@
 <template>
   <div class="common-layout">
-    <el-container>
-      <el-aside width="200px"><SideBar /></el-aside>
+    <el-container class="width">
+      <el-aside class="background-color" width="200px"><SideBar /></el-aside>
       <el-main>
-        <FormTask></FormTask>
-        <div>
-          <TableTask></TableTask>
+        <FormTask :task="taskEdit" @submit-form="updateList"></FormTask>
+        <div class="margin-list-task">
+          <TableTask @edit="edit($event)" :tableData="tableData"></TableTask>
         </div>
       </el-main>
     </el-container>
@@ -13,12 +13,33 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import SideBar from "./components/SideBar.vue";
 import FormTask from "./components/FormTask.vue";
 import TableTask from "./components/TableTask.vue";
+import TaskStorageService from "./components/task/TaskStorageService";
+import TaskStorageItem from "./components/task/TaskStorage";
 export default defineComponent({
   name: "App",
+  setup() {
+    const tableData = ref([]);
+    const taskEdit = ref(new TaskStorageItem("", "00:00:00", 0));
+    const taskStorageService = new TaskStorageService();
+
+    const updateList = () => {
+      tableData.value = taskStorageService.getTasks();
+    };
+
+    const edit = (index: number) => {
+      console.log("index");
+      console.log(index);
+    };
+
+    onMounted(() => {
+      tableData.value = taskStorageService.getTasks();
+    });
+    return { tableData, updateList, edit, taskEdit };
+  },
   components: {
     SideBar,
     FormTask,
@@ -34,5 +55,15 @@ body {
 }
 .el-form-item__error {
   font-size: 14px !important;
+}
+.margin-list-task {
+  margin-right: 2em;
+  margin-left: 2em;
+}
+.background-color {
+  background: #0d3b66;
+}
+.width {
+  height: 100vh;
 }
 </style>
