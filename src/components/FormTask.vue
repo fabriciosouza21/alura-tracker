@@ -10,7 +10,11 @@
       <el-row :gutter="20">
         <el-col :span="18">
           <el-form-item prop="name" class="input-task" label="Tarefa">
-            <el-input v-model="task.name" placeholder="Tarefa" />
+            <el-input
+              :value="task.name"
+              v-model="task.name"
+              placeholder="Tarefa"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -59,7 +63,7 @@ export default {
 
 <script setup lang="ts">
 import { FormInstance, FormRules } from "element-plus";
-import { ref, computed, reactive, defineEmits, defineProps } from "vue";
+import { ref, computed, reactive, defineEmits, defineProps, watch } from "vue";
 import TaskStorageItem from "./task/TaskStorage";
 import TaskStorageService from "./task/TaskStorageService";
 
@@ -115,6 +119,17 @@ const timeFormatted = computed(() => {
 const timeFormattedStorage = () => {
   return new Date(task.time * 1000).toISOString().substring(11, 19);
 };
+
+const updateTask = (taskUpdate: TaskStorageItem) => {
+  task.name = taskUpdate.name;
+  task.time = taskUpdate.timer;
+};
+watch(
+  () => props.task,
+  (task) => {
+    updateTask(task as TaskStorageItem);
+  }
+);
 
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;

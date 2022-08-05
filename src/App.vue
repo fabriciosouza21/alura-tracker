@@ -3,7 +3,7 @@
     <el-container class="width">
       <el-aside class="background-color" width="200px"><SideBar /></el-aside>
       <el-main>
-        <FormTask :task="taskEdit" @submit-form="updateList"></FormTask>
+        <FormTask v-model:task="taskEdit" @submit-form="updateList"></FormTask>
         <div class="margin-list-task">
           <TableTask @edit="edit($event)" :tableData="tableData"></TableTask>
         </div>
@@ -28,11 +28,11 @@ export default defineComponent({
 
     const updateList = () => {
       tableData.value = taskStorageService.getTasks();
+      taskEdit.value = new TaskStorageItem("", "00:00:00", 0);
     };
 
-    const edit = (index: number) => {
-      console.log("index");
-      console.log(index);
+    const edit = (index: TaskStorageItem) => {
+      taskEdit.value = index;
     };
 
     onMounted(() => {

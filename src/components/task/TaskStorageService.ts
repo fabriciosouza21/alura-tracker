@@ -7,8 +7,14 @@ export default class TaskStorageService {
         ? (localStorage.getItem("tasks") as string)
         : "[]";
     const tasksStorage = JSON.parse(tasksStorageString) as TaskStorageItem[];
-    if (!tasksStorage.find((t: TaskStorageItem) => t.name === task.name)) {
+    const taskRepitida = tasksStorage.find(
+      (t: TaskStorageItem) => t.name === task.name
+    ) as TaskStorageItem;
+    if (!taskRepitida) {
       tasksStorage.push(task);
+    } else {
+      const index = tasksStorage.indexOf(taskRepitida);
+      tasksStorage[index] = task;
     }
     localStorage.setItem("tasks", JSON.stringify(tasksStorage));
   }

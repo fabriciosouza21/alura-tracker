@@ -4,7 +4,7 @@
     <el-table-column resizable prop="name" label="Name" />
     <el-table-column width="100">
       <template #default="scope">
-        <el-button text size="small" @click="handleEdit(scope.$index)">
+        <el-button text size="small" @click="handleEdit(scope.row)">
           <el-icon>
             <Edit></Edit>
           </el-icon>
@@ -23,6 +23,7 @@ export default {
 </script>
 <script setup lang="ts">
 import { defineProps, defineEmits } from "vue";
+import TaskStorageItem from "./task/TaskStorage.js";
 const props = defineProps({
   tableData: {
     type: Array,
@@ -32,7 +33,7 @@ const props = defineProps({
 
 const emit = defineEmits(["edit"]);
 
-const handleEdit = (index: number) => {
-  emit("edit", index);
+const handleEdit = (task: TaskStorageItem) => {
+  emit("edit", task);
 };
 </script>
